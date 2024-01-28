@@ -15,19 +15,29 @@ struct salary
 void list_salary(ifstream& file_out, salary& company)
 {
     int len_name;
-    int len_date;
     file_out.read((char*)&len_name, sizeof(len_name));
     company.name.resize(len_name);
     file_out.read((char*)company.name.c_str(), len_name);
+
+    int len_date;
     file_out.read((char*)&len_date, sizeof(len_date));
     company.issue_date.resize(len_date);
     file_out.read((char*)company.issue_date.c_str(), len_date);
+
     file_out.read((char*)&company.salary, sizeof(company.salary));
 }
 
 void add_salary(ofstream& file_in, salary& company)
 {
+    int len_name = company.name.length();
+    file_in.write((char*)&len_name, sizeof(len_name));
+    file_in.write(company.name.c_str(), len_name);
 
+    int len_date = company.issue_date.length();
+    file_in.write((char*)&len_date, sizeof(len_date));
+    file_in.write(company.issue_date.c_str(), len_date);
+
+    file_in.write((char*)&company.salary, sizeof(company.salary));
 }
 
 int main()
@@ -50,8 +60,19 @@ int main()
     }
     else if (command == "add")
     {
+        char is_next = ' ';
         ofstream file_in ("salary.txt", ios::app);
 
+        cout << "Enter name: ";
+        cin >> company.name;
+
+        cout << "Enter date (dd.mm.yyyy): ";
+        cin >> company.issue_date;
+
+        cout << "Enter salary: ";
+        cin >> company.salary;
+
+        add_salary(file_in, company);
         file_in.close();
     }
     else
